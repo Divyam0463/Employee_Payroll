@@ -1,4 +1,4 @@
-package com.example.employee_payroll;
+package com.example.employee_payroll.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ public class User {
   private String firstname ; 
 
   @Column
-  private String lastname ; 
+  private Long salary ; 
 
     public Long getId() {
         return id;
@@ -34,13 +34,11 @@ public class User {
         this.firstname = firstname;
     }
 
-    public String getLastname() {
-        return lastname;
+    public Long getSalary() {
+        return salary;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setSalary(Long salary) {
+        this.salary = salary;
     }
-
-  
 }

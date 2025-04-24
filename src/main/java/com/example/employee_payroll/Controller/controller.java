@@ -1,4 +1,4 @@
-package com.example.employee_payroll;
+package com.example.employee_payroll.Controller;
 
 import java.util.List;
 
@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.employee_payroll.Model.User;
+import com.example.employee_payroll.Repo.UserRepo;
+import com.example.employee_payroll.Service.UserService;
 
 
 @RestController
@@ -36,8 +40,6 @@ public class controller {
     User targetUser = userRepo.findById(id).get() ; 
     if(targetUser!=null){
       targetUser.setFirstname(user.getFirstname());
-      targetUser.setLastname(user.getLastname());
-
       userRepo.save(targetUser);
       return "updated" ;
     }
@@ -51,5 +53,30 @@ public class controller {
 
     return "deleted" ; 
   }
+
+
+  //UC
   
+  @Autowired
+  public UserService service ; 
+
+   @GetMapping("/service/get")
+   public Object getData(){
+    return service.getData();
+   }
+
+   @PostMapping("/service/add")
+   public String addData(@RequestBody User user){
+    return service.addData(user) ;
+   }
+
+   @PutMapping("/service/update/{id}")
+   public String putData(@PathVariable Long id, @RequestBody User updated_user){
+    return service.updateData(id, updated_user); 
+   }
+
+   @DeleteMapping("/service/delete/{id}")
+   public boolean deleteDate(@PathVariable Long id){
+     return service.deleteData(id) ; 
+   }
 }
