@@ -1,45 +1,83 @@
 package com.example.employee_payroll.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.example.employee_payroll.Repo.UserRepo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.employee_payroll.Model.User;
 
 @Service
+@Slf4j
 public class UserService {
-  List<User> data = new ArrayList<>() ; 
 
-  //get
-  public List<User> getData(){
-    return data ;     
-  }
-  
-  //post
-  public String addData(User user){
-    data.add(user); 
-    return "added" ; 
-  }
+  @Autowired
+  public UserRepo userRepo;
 
-  //for updation purposes
-  public User getUserByid(Long id){
-    return data.stream().filter(user -> user.getId().equals(id)).findFirst().orElse(null) ; 
+  // Get all users
+  public List<User> getData() {
+    log.info("Fetching all users from the database");
+    List<User> users = userRepo.findAll();
+    log.debug("Total users found: {}", users.size());
+    return users;
   }
 
-  //update
-  public String updateData(Long id,User updated_user){
-    User user = getUserByid(id) ; //we get the user here 
-    if(user != null){
+  // Add a new user
+  public String addData(User user) {
+    log.info("Adding new user: {}", user.getFirstname());
+    try {
+      userRepo.save(user);
+      log.debug("User saved successfully: {}", user);
+      return "added";
+    } catch (Exception e) {
+      log.error("Error occurred while saving user: {}", user, e);
+      return "error";
+    }
+  }
+
+  // Get user by ID
+  public User getUserByid(Long id) {
+    log.info("Fetching user by ID: {}", id);
+    Optional<User> userOpt = userRepo.findById(id);
+    if (userOpt.isPresent()) {
+      log.debug("User found: {}", userOpt.get());
+      return userOpt.get();
+    } else {
+      log.warn("User with ID {} not found", id);
+      return null;
+    }
+  }
+
+  // Update user
+  public String updateData(Long id, User updated_user) {
+    log.info("Updating user with ID: {}", id);
+    User user = getUserByid(id);
+    if (user != null) {
       user.setFirstname(updated_user.getFirstname());
       user.setSalary(updated_user.getSalary());
-
-      return "updated" ; 
-    }return null ;
+      userRepo.save(user);
+      log.debug("User updated: {}", user);
+      return "updated";
+    } else {
+      log.warn("Update failed. No user found with ID: {}", id);
+      return null;
+    }
   }
 
-  //delete
-  public boolean deleteData(Long id){
-    return data.removeIf((user) -> user.getId().equals(id)) ; 
+  // Delete user
+  public boolean deleteData(Long id) {
+    log.info("Attempting to delete user with ID: {}", id);
+    Optional<User> userOpt = userRepo.findById(id);
+    if (userOpt.isPresent()) {
+      userRepo.delete(userOpt.get());
+      log.debug("User deleted successfully: {}", userOpt.get());
+      return true;
+    } else {
+      log.warn("Delete failed. No user found with ID: {}", id);
+      return false;
+    }
   }
 }
