@@ -3,23 +3,25 @@ package com.example.employee_payroll.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.example.employee_payroll.Model.User;
 
 @Service
+@Slf4j
 public class UserService {
-  List<User> data = new ArrayList<>() ; 
+  List<User> data = new ArrayList<>() ;
 
   //get
   public List<User> getData(){
-    return data ;     
+    return data ;
   }
-  
+
   //post
   public String addData(User user){
-    data.add(user); 
-    return "added" ; 
+      data.add(user);
+      return "added" ;
   }
 
   //for updation purposes
@@ -40,6 +42,6 @@ public class UserService {
 
   //delete
   public boolean deleteData(Long id){
-    return data.removeIf((user) -> user.getId().equals(id)) ; 
+    return data.removeIf((user) -> user.getId().equals(id)) ;
   }
 }
