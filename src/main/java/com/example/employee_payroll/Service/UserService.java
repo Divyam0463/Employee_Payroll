@@ -3,6 +3,7 @@ package com.example.employee_payroll.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.employee_payroll.Exception.UserNotFoundException;
 import com.example.employee_payroll.Repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserService {
   }
 
   // Get user by ID
-  public User getUserByid(Long id) {
+  public User getUserByid(Long id) throws UserNotFoundException{
     log.info("Fetching user by ID: {}", id);
     Optional<User> userOpt = userRepo.findById(id);
     if (userOpt.isPresent()) {
@@ -47,12 +48,12 @@ public class UserService {
       return userOpt.get();
     } else {
       log.warn("User with ID {} not found", id);
-      return null;
+      throw new UserNotFoundException("user not found with id : "+id) ;
     }
   }
 
   // Update user
-  public String updateData(Long id, User updated_user) {
+  public String updateData(Long id, User updated_user) throws UserNotFoundException{
     log.info("Updating user with ID: {}", id);
     User user = getUserByid(id);
     if (user != null) {
@@ -63,12 +64,12 @@ public class UserService {
       return "updated";
     } else {
       log.warn("Update failed. No user found with ID: {}", id);
-      return null;
+      throw new UserNotFoundException("user not found with id : "+id) ;
     }
   }
 
   // Delete user
-  public boolean deleteData(Long id) {
+  public boolean deleteData(Long id) throws UserNotFoundException {
     log.info("Attempting to delete user with ID: {}", id);
     Optional<User> userOpt = userRepo.findById(id);
     if (userOpt.isPresent()) {
@@ -77,7 +78,7 @@ public class UserService {
       return true;
     } else {
       log.warn("Delete failed. No user found with ID: {}", id);
-      return false;
+      throw new UserNotFoundException("user not found with id : "+id) ;
     }
   }
 }

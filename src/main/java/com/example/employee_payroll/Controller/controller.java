@@ -2,6 +2,8 @@ package com.example.employee_payroll.Controller;
 
 import java.util.List;
 
+import com.example.employee_payroll.Exception.UserNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,65 +20,35 @@ import com.example.employee_payroll.Service.UserService;
 
 
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/service")
 public class controller {
-
-  @Autowired
-  public UserRepo userRepo ; 
-
-  @GetMapping("/listAll")
-  public List<User> listall(){
-    return userRepo.findAll() ; 
-  }
-
-  @PostMapping("/addEntry")
-  public String postName(@RequestBody User user) {
-    userRepo.save(user) ; 
-    return "added";
-  }
-
-  @PutMapping("/update/{id}")
-  public String update(@PathVariable Long id, @RequestBody User user){
-    User targetUser = userRepo.findById(id).get() ; 
-    if(targetUser!=null){
-      targetUser.setFirstname(user.getFirstname());
-      userRepo.save(targetUser);
-      return "updated" ;
-    }
-    return null;
-  }
-
-  @DeleteMapping("delete/{id}")
-  public String delete(@PathVariable Long id){
-    User targetUser = userRepo.findById(id).get() ; 
-    userRepo.delete(targetUser);
-
-    return "deleted" ; 
-  }
-
-
   //UC
-  
   @Autowired
   public UserService service ; 
 
-   @GetMapping("/service/get")
+   @GetMapping
    public Object getData(){
     return service.getData();
    }
 
-   @PostMapping("/service/add")
-   public String addData(@RequestBody User user){
+   @GetMapping("/{id}")
+   public User getUserByid(@PathVariable Long id) throws UserNotFoundException {
+       return service.getUserByid(id) ;
+   }
+
+   @PostMapping
+   public String addData(@RequestBody @Valid User user){
     return service.addData(user) ;
    }
 
-   @PutMapping("/service/update/{id}")
-   public String putData(@PathVariable Long id, @RequestBody User updated_user){
+
+   @PutMapping("/{id}")
+   public String putData(@PathVariable Long id, @RequestBody @Valid User updated_user) throws UserNotFoundException {
     return service.updateData(id, updated_user); 
    }
 
-   @DeleteMapping("/service/delete/{id}")
-   public boolean deleteDate(@PathVariable Long id){
-     return service.deleteData(id) ; 
+   @DeleteMapping("/{id}")
+   public boolean deleteDate(@PathVariable Long id) throws UserNotFoundException {
+       return service.deleteData(id);
    }
 }
