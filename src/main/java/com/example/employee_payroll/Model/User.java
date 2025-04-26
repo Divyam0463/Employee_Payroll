@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,13 +16,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(strategy=GenerationType.AUTO)
   @Id
   private Long id ; 
 
+  @Pattern(regexp = "^[a-zA-Z]+([ '-][A-Za-z]+)*$",message = "Invalid syntax for Name ")
+  @NotBlank(message = "Name can't be left empty")
   @Column
-  private String firstname ; 
+  private String firstname ;
 
   @Column
-  private Long salary ;
+  private Double salary ;
 }
